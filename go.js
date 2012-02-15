@@ -1,15 +1,20 @@
 
+
+//everything needs access to the canvas and context
 var canvas = document.getElementById("mainCanvas");
+var ctx = canvas.getContext('2d');
+
+
 var constants = {
-        width: 600,
-        height: 600,
+        width: 700,
+        height: 700,
         color: "#f0f0b8",
         boardPadding: 30, //space on sides of the board
         starPointRadius: 6,
         stoneRadius: 10,
 }
 
-function initialize() { 
+function drawInitialBoard() { 
 
    var bp = constants.boardPadding;
 
@@ -19,7 +24,6 @@ function initialize() {
    canvas.setAttribute('width',constants.width+bp*2);
    canvas.setAttribute('height',constants.height+bp*2);
 
-   var ctx = canvas.getContext('2d');
    
    ctx.fillStyle=constants.color;
    ctx.fillRect(bp,bp,constants.width,constants.height);
@@ -71,23 +75,18 @@ function initialize() {
 
 }
 
-//takes in go coordinates, places the piece at there
-//maintains current state of the board
-function placePiece(x,y) {
+//takes in go coordinates, places a piece of the specificed 
+//color at there
+function placePiece(x,y,color) {
 
-   var ctx = canvas.getContext('2d');
-
+   //convert back from go coordinates to canvas pixels
    var canvasX = constants.boardPadding+(constants.width/18)*(x-1); 
    var canvasY = constants.boardPadding+(constants.height/18)*(y-1);
    console.log("Moved to: ",canvasX-constants.stoneRadius,",",canvasY);
 
-   //do the black-white alternation
-   if (ctx.fillStyle == "#ffffff") {
-      ctx.fillStyle = "black";
-   }
-   else {
-      ctx.fillStyle="white";
-   }
+   if (color == "black") ctx.fillStyle = "black";
+   else if (color == "white") ctx.fillStyle = "white";
+   else console.log("Invalid color of go piece");
 
    ctx.beginPath();
    ctx.moveTo(canvasX-constants.stoneRadius,canvasY);
@@ -113,12 +112,12 @@ function convertToGoCoordinates(mouseX, mouseY) {
     if (goY > 19) goY=19;
 
     console.log("Go coordinates: " + goX + "," +goY);
-    placePiece(goX, goY);
+    placePiece(goX, goY, "black");
 }
 
 
 //it all begins here...
-initialize();
+drawInitialBoard();
 
 //attach a function to canvas to listen for clicks, get the coords, and pass
 //it off to the piece adding/subtracting function
