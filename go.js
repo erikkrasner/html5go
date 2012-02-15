@@ -156,6 +156,50 @@ function attemptMove(x,y,player) {
 }
 
 
+//removes a piece from the canvas and also the gameboard state
+function removePiece(x,y) {
+
+   function removePieceFromCanvas(x,y) {
+      //convert back from go coordinates to canvas pixels
+      var canvasX = constants.boardPadding+(constants.width/18)*(x-1); 
+      var canvasY = constants.boardPadding+(constants.height/18)*(y-1);
+
+      //fill in circle with background
+      ctx.beginPath();
+      ctx.fillStyle=constants.color;
+      ctx.moveTo(canvasX-constants.stoneRadius,canvasY);
+      ctx.arc(canvasX,canvasY,constants.stoneRadius+1,0,Math.PI*2,true);//need the +1 to ensure the stone is wholly erased
+      ctx.fill();
+      ctx.closePath();
+      //and redraw grid lines
+
+      ctx.strokeStyle="black";
+      //vertical line
+      ctx.beginPath();
+      ctx.moveTo(canvasX,canvasY-constants.stoneRadius-1);
+      ctx.lineTo(canvasX,canvasY+constants.stoneRadius+1);
+      ctx.stroke();
+      ctx.closePath();
+      //horizontal line
+      ctx.beginPath();
+      ctx.moveTo(canvasX-constants.stoneRadius-1,canvasY);
+      ctx.lineTo(canvasX+constants.stoneRadius+1,canvasY);
+      ctx.stroke();
+      ctx.closePath();
+      
+   }
+
+     if (gbfunc.pieceAt(x,y)) {
+        removePieceFromState(x,y);
+        removePieceFromCanvas(x,y);
+
+     }
+     else {
+        console.log("There's no piece at location " + x + "," + y  + " to remove");
+     }
+}
+
+
 //establish a closure to store the gameboard
 //and binds its return to gbfunc
 var gbfunc = function () {
@@ -183,18 +227,22 @@ var gbfunc = function () {
         }
 
         return {makeMove: makeMoveFunction, 
-                removePiece: function(x,y) {
+                removePieceFromState: function(x,y) {
                         console.log("Removed a piece of color " + board[x-1][y-1] + "at " + x+","+y);
-                        board[x-1][y-1] = ""; },
+                        board[x-1][y-1] = null; },
 
                 printBoard: function () { console.log(board);},
-        };
+                pieceAt : function (x,y) {
+                        if (board[x-1][y-1] == null) { return false; }
+                        else { return board[x-1][y-1]; }
+                        },
+              };
 }();
 
 //parcel out individual functions from the gbfunc wrapper
 //and bind them to variables in the global namespace
 var makeMove = gbfunc.makeMove;
-var removePiece = gbfunc.removePiece;
+var removePieceFromState = gbfunc.removePieceFromState;
 var printBoard = gbfunc.printBoard;
 
 
