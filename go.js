@@ -120,15 +120,18 @@ function clickToGoCoordinates(mouseX, mouseY) {
 
 var currentPlayer = "black";//initialized to black on game start 
                             //because that's how you play Go 
+$('#currentPlayer').text("Current Player: Black");
 
 function switchPlayer() {
    if (currentPlayer == "black") {
         console.log("Switching from black to white player");
         currentPlayer = "white";
+        $('#currentPlayer').text("Current Player: White");
    }
    else {
       currentPlayer = "black";
       console.log("Switching from white to black player");
+      $('#currentPlayer').text("Current Player: Black");
    }
 }
 
