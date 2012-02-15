@@ -112,26 +112,34 @@ function clickToGoCoordinates(mouseX, mouseY) {
     if (goY > 19) goY=19;
 
     console.log("Go coordinates clicked on: " + goX + "," +goY);
-    placePiece(goX, goY, "black");
-    switchPlayer();
+    attemptMove(goX, goY, "black");
 }
+
+//attempts to make a move and alerts the player if it's
+//illegal or something's wrong, etc.
+function attemptMove(x,y,player) {
+      placePiece(x,y,player);
+      switchPlayer();
+
+}
+
 
 //game state 
 
 var currentPlayer = "black";//initialized to black on game start 
                             //because that's how you play Go 
-$('#currentPlayer').text("Current Player: Black");
+$('#currentPlayer').text("Next to Play: Black");
 
 function switchPlayer() {
    if (currentPlayer == "black") {
         console.log("Switching from black to white player");
         currentPlayer = "white";
-        $('#currentPlayer').text("Current Player: White");
+        $('#currentPlayer').text("Next to Play: White");
    }
    else {
       currentPlayer = "black";
       console.log("Switching from white to black player");
-      $('#currentPlayer').text("Current Player: Black");
+      $('#currentPlayer').text("Next to Play: Black");
    }
 }
 
