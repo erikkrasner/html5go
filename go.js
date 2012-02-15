@@ -280,3 +280,5 @@ canvas.addEventListener('click', function (e) {
      clickToGoCoordinates(e.offsetX,e.offsetY);
 });
 
+
+//$("#mainCanvas").rightClick(function (e) {alert("rightclick!");});
