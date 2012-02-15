@@ -1,3 +1,17 @@
 canvas {
         border: 1px dotted black;
 }
+
+
+#info {
+        
+        float:right;
+}
+
+#currentPlayer {
+        text-align:center;
+}
+
+#gameBoard {
+        float:left;
+}
