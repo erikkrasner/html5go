@@ -118,7 +118,8 @@ function clickToGoCoordinates(mouseX, mouseY) {
 
 //game state 
 
-var currentPlayer = "black";//initialized to black b/c it's Go
+var currentPlayer = "black";//initialized to black on game start 
+                            //because that's how you play Go 
 
 function switchPlayer() {
    if (currentPlayer == "black") {
@@ -136,8 +137,6 @@ function switchPlayer() {
 //it all begins here...
 //that is, execution begins here
 drawInitialBoard();
-
-
 
 //attach a function to canvas to listen for clicks, get the coords, and pass
 //it off to the piece adding/subtracting function
