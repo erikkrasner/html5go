@@ -1,10 +1,5 @@
 
-
-//everything needs access to the canvas and context
-var canvas = document.getElementById("mainCanvas");
-var ctx = canvas.getContext('2d');
-
-
+//these should never be changed during the course of the program
 var constants = {
         width: 700,
         height: 700,
@@ -13,6 +8,11 @@ var constants = {
         starPointRadius: 6,
         stoneRadius: 10,
 }
+
+//everything needs access to the canvas and context
+var canvas = document.getElementById("mainCanvas");
+var ctx = canvas.getContext('2d');
+
 
 function drawInitialBoard() { 
 
@@ -84,9 +84,9 @@ function placePiece(x,y,color) {
    var canvasY = constants.boardPadding+(constants.height/18)*(y-1);
    console.log("Moved to: ",canvasX-constants.stoneRadius,",",canvasY);
 
-   if (color == "black") ctx.fillStyle = "black";
-   else if (color == "white") ctx.fillStyle = "white";
-   else console.log("Invalid color of go piece");
+   if (currentPlayer == "black") ctx.fillStyle = "black";
+   else if (currentPlayer == "white") ctx.fillStyle = "white";
+   else console.log("Invalid player");
 
    ctx.beginPath();
    ctx.moveTo(canvasX-constants.stoneRadius,canvasY);
@@ -97,7 +97,7 @@ function placePiece(x,y,color) {
 
 //this function takes raw canvas coordinates and converts them
 //into the nearest node on the go board that the user clicked on
-function convertToGoCoordinates(mouseX, mouseY) {
+function clickToGoCoordinates(mouseX, mouseY) {
 
     //first remove the padding
     mouseX = mouseX - 0.5*constants.boardPadding;
@@ -113,17 +113,37 @@ function convertToGoCoordinates(mouseX, mouseY) {
 
     console.log("Go coordinates: " + goX + "," +goY);
     placePiece(goX, goY, "black");
+    switchPlayer();
+}
+
+//game state 
+
+var currentPlayer = "black";//initialized to black b/c it's Go
+
+function switchPlayer() {
+   if (currentPlayer == "black") {
+        console.log("Switching from black to white player");
+        currentPlayer = "white";
+   }
+   else {
+      currentPlayer = "black";
+      console.log("Switching from white to black player");
+   }
 }
 
 
+
 //it all begins here...
+//that is, execution begins here
 drawInitialBoard();
+
+
 
 //attach a function to canvas to listen for clicks, get the coords, and pass
 //it off to the piece adding/subtracting function
 canvas.addEventListener('click', function (e) {
      console.log("Click at: " + e.offsetX + "," + e.offsetY);
-     convertToGoCoordinates(e.offsetX,e.offsetY);
+     clickToGoCoordinates(e.offsetX,e.offsetY);
 });
 
 
