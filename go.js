@@ -6,7 +6,7 @@ var constants = {
         color: "#f0f0b8",
         boardPadding: 30, //space on sides of the board
         starPointRadius: 6,
-        stoneRadius: 10,
+        stoneRadius: 13,
 }
 
 //everything needs access to the canvas and context
