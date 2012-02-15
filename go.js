@@ -1,10 +1,12 @@
 
+var canvas = document.getElementById("mainCanvas");
 var constants = {
         width: 600,
         height: 600,
         color: "#f0f0b8",
         boardPadding: 30, //space on sides of the board
         starPointRadius: 6,
+        stoneRadius: 10,
 }
 
 function initialize() { 
@@ -21,7 +23,7 @@ function initialize() {
    
    ctx.fillStyle=constants.color;
    ctx.fillRect(bp,bp,constants.width,constants.height);
-   var horizSpacing = constants.width/19;
+   var horizSpacing = constants.width/18;
 
    function drawGridLines() {
       for (i = 0; i <= 19; i++) {
@@ -31,7 +33,7 @@ function initialize() {
              ctx.stroke();
       }
 
-      var vertSpacing = constants.height/19;
+      var vertSpacing = constants.height/18;
       for (i = 0; i <= 19; i++) {
              ctx.beginPath();
              ctx.moveTo(bp+i*vertSpacing,bp);
@@ -52,16 +54,16 @@ function initialize() {
      //9 points by hand, but since this is just simply the way that a go board is layed
      //out, it makes some sense to hard code it for right now
      drawStar(bp + 3*horizSpacing,bp + 3*vertSpacing);
-     drawStar(bp + 10*horizSpacing,bp + 3*vertSpacing);
-     drawStar(bp + 16*horizSpacing,bp + 3*vertSpacing);
+     drawStar(bp + 9*horizSpacing,bp + 3*vertSpacing);
+     drawStar(bp + 15*horizSpacing,bp + 3*vertSpacing);
 
-     drawStar(bp + 3*horizSpacing,bp + 10*vertSpacing);
-     drawStar(bp + 10*horizSpacing,bp + 10*vertSpacing);
-     drawStar(bp + 16*horizSpacing,bp + 10*vertSpacing);
+     drawStar(bp + 3*horizSpacing,bp + 9*vertSpacing);
+     drawStar(bp + 9*horizSpacing,bp + 9*vertSpacing);
+     drawStar(bp + 15*horizSpacing,bp + 9*vertSpacing);
 
-     drawStar(bp + 3*horizSpacing,bp + 16*vertSpacing);
-     drawStar(bp + 10*horizSpacing,bp + 16*vertSpacing);
-     drawStar(bp + 16*horizSpacing,bp + 16*vertSpacing);
+     drawStar(bp + 3*horizSpacing,bp + 15*vertSpacing);
+     drawStar(bp + 9*horizSpacing,bp + 15*vertSpacing);
+     drawStar(bp + 15*horizSpacing,bp + 15*vertSpacing);
    }
 
    drawGridLines();
@@ -69,6 +71,46 @@ function initialize() {
 
 }
 
+//takes in go coordinates, places the piece at there
+//maintains current state of the board
+function placePiece(x,y) {
+
+   var ctx = canvas.getContext('2d');
+
+   var canvasX = constants.boardPadding+(constants.width/18)*x; 
+   var canvasY = constants.boardPadding+(constants.height/18)*y;
+   console.log("Moved to: ",canvasX-constants.stoneRadius,",",canvasY);
+   ctx.fillStyle = "blue";
+   ctx.beginPath();
+   ctx.moveTo(canvasX-constants.stoneRadius,canvasY);
+   ctx.arc(canvasX,canvasY,constants.stoneRadius,0,Math.PI*2,true);
+   ctx.fill();
+                   
+}
+
+//this function takes raw canvas coordinates and converts them
+//into the nearest node on the go board that the user clicked on
+function convertToGoCoordinates(mouseX, mouseY) {
+
+    //first remove the padding
+    mouseX = mouseX - 0.5*constants.boardPadding;
+    mouseY = mouseY - 0.5*constants.boardPadding;
+    var goX = Math.round(19*mouseX /constants.width); 
+    var goY = Math.round(19*mouseY /constants.height); 
+    console.log(goX + "," +goY);
+    placePiece(goX, goY);
+}
+
+
+//it all begins here...
 initialize();
+
+//attach a function to canvas to listen for clicks, get the coords, and pass
+//it off to the piece adding/subtracting function
+canvas.addEventListener('click', function (e) {
+     console.log("Click at: " + e.offsetX + "," + e.offsetY);
+     convertToGoCoordinates(e.offsetX,e.offsetY);
+});
+
 
 
