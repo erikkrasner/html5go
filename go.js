@@ -100,10 +100,10 @@ function placePiece(x,y,color) {
 function clickToGoCoordinates(mouseX, mouseY) {
 
     //first remove the padding
-    mouseX = mouseX - 0.5*constants.boardPadding;
-    mouseY = mouseY - 0.5*constants.boardPadding;
-    var goX = Math.round(19*mouseX /constants.width); 
-    var goY = Math.round(19*mouseY /constants.height); 
+    mouseX = mouseX - constants.boardPadding;
+    mouseY = mouseY - constants.boardPadding;
+    var goX = Math.round(mouseX /(constants.width/18)) + 1; 
+    var goY = Math.round(mouseY /(constants.height/18)) + 1; 
 
     //fixing up out of bounds cases
     if (goX < 1) goX = 1;
@@ -111,7 +111,7 @@ function clickToGoCoordinates(mouseX, mouseY) {
     if (goX > 19) goX = 19;
     if (goY > 19) goY=19;
 
-    console.log("Go coordinates: " + goX + "," +goY);
+    console.log("Go coordinates clicked on: " + goX + "," +goY);
     placePiece(goX, goY, "black");
     switchPlayer();
 }
