@@ -77,10 +77,18 @@ function placePiece(x,y) {
 
    var ctx = canvas.getContext('2d');
 
-   var canvasX = constants.boardPadding+(constants.width/18)*x; 
-   var canvasY = constants.boardPadding+(constants.height/18)*y;
+   var canvasX = constants.boardPadding+(constants.width/18)*(x-1); 
+   var canvasY = constants.boardPadding+(constants.height/18)*(y-1);
    console.log("Moved to: ",canvasX-constants.stoneRadius,",",canvasY);
-   ctx.fillStyle = "blue";
+
+   //do the black-white alternation
+   if (ctx.fillStyle == "#ffffff") {
+      ctx.fillStyle = "black";
+   }
+   else {
+      ctx.fillStyle="white";
+   }
+
    ctx.beginPath();
    ctx.moveTo(canvasX-constants.stoneRadius,canvasY);
    ctx.arc(canvasX,canvasY,constants.stoneRadius,0,Math.PI*2,true);
@@ -97,7 +105,14 @@ function convertToGoCoordinates(mouseX, mouseY) {
     mouseY = mouseY - 0.5*constants.boardPadding;
     var goX = Math.round(19*mouseX /constants.width); 
     var goY = Math.round(19*mouseY /constants.height); 
-    console.log(goX + "," +goY);
+
+    //fixing up out of bounds cases
+    if (goX < 1) goX = 1;
+    if (goY < 1) goY =1;
+    if (goX > 19) goX = 19;
+    if (goY > 19) goY=19;
+
+    console.log("Go coordinates: " + goX + "," +goY);
     placePiece(goX, goY);
 }
 
