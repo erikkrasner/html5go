@@ -176,14 +176,29 @@ function removePiece(x,y) {
       ctx.strokeStyle="black";
       //vertical line
       ctx.beginPath();
-      ctx.moveTo(canvasX,canvasY-constants.stoneRadius-1);
-      ctx.lineTo(canvasX,canvasY+constants.stoneRadius+1);
+      if (y == 1) 
+        ctx.moveTo(canvasX,canvasY);
+      
+      else 
+        ctx.moveTo(canvasX,canvasY-constants.stoneRadius-1);
+      if (y == 19) 
+        ctx.lineTo(canvasX,canvasY);
+      
+      else 
+        ctx.lineTo(canvasX,canvasY+constants.stoneRadius+1);
+      
       ctx.stroke();
       ctx.closePath();
       //horizontal line
       ctx.beginPath();
-      ctx.moveTo(canvasX-constants.stoneRadius-1,canvasY);
-      ctx.lineTo(canvasX+constants.stoneRadius+1,canvasY);
+      if (x == 1)
+        ctx.moveTo(canvasX,canvasY);
+      else
+        ctx.moveTo(canvasX-constants.stoneRadius-1,canvasY);
+      if (x == 19)
+        ctx.lineTo(canvasX,canvasY);
+      else
+        ctx.lineTo(canvasX+constants.stoneRadius+1,canvasY);
       ctx.stroke();
       ctx.closePath();
       
