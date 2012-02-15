@@ -112,8 +112,9 @@ function switchPlayer() {
    }
 }
 
-//this function takes raw canvas coordinates and converts them
+//takes raw canvas coordinates and converts them
 //into the nearest node on the go board that the user clicked on
+//and then calls attemptMove() with coords in the go space instead of pixels 
 function clickToGoCoordinates(mouseX, mouseY) {
 
     //first remove the padding
@@ -135,12 +136,22 @@ function clickToGoCoordinates(mouseX, mouseY) {
 //attempts to make a move and alerts the player if it's
 //illegal or something's wrong, etc.
 function attemptMove(x,y,player) {
-      if (makeMove(x,y, player)) {
+      //for mapping of numeric codes returned by makeMove
+      //to outcomes, see the definition of makeMove within
+      //the closure storing the gameboard state
+
+      var code = makeMove(x,y,player);
+
+      if (code == 0) {
         placePiece(x,y,player);
         switchPlayer();
       }
+      else if (code == 1) { //ko rule
+        console.log("Ko rule, can't play here");
+
+      }
       else {
-        console.log("couldn't make the move for some reason");
+        console.log("Can't place stone here because this spot has already had a stone played on it");
       }
 }
 
@@ -158,14 +169,15 @@ var gbfunc = function () {
         function makeMoveFunction(x,y,player) {
             if(board[x-1][y-1] == null) {
                 board[x-1][y-1] = player;
-                return true;
+                return 0;
             }
             else if (false) {
             //this is where the ko rule would be implemented
 
+                return 1;
             }
             else {
-                return false;
+                return 2;
             }
 
         }
