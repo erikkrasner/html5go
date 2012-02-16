@@ -77,6 +77,8 @@ function drawInitialBoard() {
 
 //takes in go coordinates, places a piece of the specificed 
 //color at there
+//note that placePiece doesn't care about the current state of the game
+//or who the player is, it just puts down a piece of whatever color
 function placePiece(x,y,color) {
 
    //convert back from go coordinates to canvas pixels
@@ -84,9 +86,9 @@ function placePiece(x,y,color) {
    var canvasY = constants.boardPadding+(constants.height/18)*(y-1);
    console.log("Moved to: ",canvasX-constants.stoneRadius,",",canvasY);
 
-   if (currentPlayer == "black") ctx.fillStyle = "black";
-   else if (currentPlayer == "white") ctx.fillStyle = "white";
-   else console.log("Invalid player");
+   if (color == "black") ctx.fillStyle = "black";
+   else if (color == "white") ctx.fillStyle = "white";
+   else console.log("Invalid Color in placePiece");
 
    ctx.beginPath();
    ctx.moveTo(canvasX-constants.stoneRadius,canvasY);
