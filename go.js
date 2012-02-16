@@ -158,6 +158,26 @@ function attemptMove(x,y,player) {
 }
 
 
+//places handicap stones appropriately according to the rules of go
+//TODO figure out what the fuck the rules are for placing handicap stones :\
+
+function placeHandicapStones(numStones, player) {
+
+    if (numStones < 1) {
+        return true;
+    }
+
+    else if (numStones == 1) 
+        gbfunc.makeArbitraryMove(4,4,player);
+    else if (numStones == 2)
+        gbfunc.makeArbitraryMove(10,4,player);
+    else if (numStones == 3)
+        gbfunc.makeArbitraryMove(16,4,player);
+
+    placeHandicapStones(numStones - 1,player);
+}
+
+
 //removes a piece from the canvas and also the gameboard state
 function removePiece(x,y) {
 
