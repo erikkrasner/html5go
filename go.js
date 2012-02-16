@@ -308,9 +308,13 @@ drawInitialBoard();
 
 //attach a function to canvas to listen for clicks, get the coords, and pass
 //it off to the piece adding/subtracting function
-canvas.addEventListener('click', function (e) {
-     console.log("Click at: " + e.offsetX + "," + e.offsetY);
-     clickToGoCoordinates(e.offsetX,e.offsetY);
+
+$("#mainCanvas").click(function (e) {
+        console.log(e.pageX);
+        var x = e.pageX - $("#mainCanvas").offset().left;
+        var y = e.pageY - $("#mainCanvas").offset().top;
+        console.log("Click at: " + x + "," + y);
+        clickToGoCoordinates(x,y);
 });
 
 
