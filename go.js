@@ -223,6 +223,16 @@ var gbfunc = function () {
             board[i] = new Array(19);
         }
 
+        //much like makeMoveFunction, except this doesn't bother to check if 
+        //the move is according to the rules of Go and just changes the
+        //state of the board, for debugging/handicaps/etc.
+        function makeArbitraryMoveFunction(x,y,player) {
+                console.log("Making arbitrary move");
+                board[x-1][y-1] = player;
+                //recall, placePiece updates the canvas gameboard
+                placePiece(x,y,player);
+        }
+
         //this function goes through the logic of a move and determines whether
         //or not it is a legal move, updating the game state iff it is
         function makeMoveFunction(x,y,player) {
@@ -251,6 +261,7 @@ var gbfunc = function () {
                         if (board[x-1][y-1] == null) { return false; }
                         else { return board[x-1][y-1]; }
                         },
+                makeArbitraryMove: makeArbitraryMoveFunction,
               };
 }();
 
