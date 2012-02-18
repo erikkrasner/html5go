@@ -145,7 +145,14 @@ function attemptMove(x,y,player) {
       var makeMoveReturnCode = makeMove(x,y,player);
 
       if (makeMoveReturnCode == 0) {
+        //place the piece on the gameboard canvas
         placePiece(x,y,player);
+
+        //remove dead stones (if necessary - removeDeadStones figures that out)
+        //and add the total captured to total
+        playerData[player].enemyPiecesCaptured += removeDeadStones(x,y);
+        console.log("Player " + playerData[player].name + " has now captured " + playerData[player].enemyPiecesCaptured + " stones in total");
+
         switchPlayer();
       }
       else if (makeMoveReturnCode == 1) { //ko rule
@@ -237,6 +244,12 @@ function removePiece(x,y) {
 }
 
 
+
+//player data, used to calculate score when the game ends 
+var playerData = new Object();
+playerData.black = { enemyPiecesCaptured:0, name:"black"};
+playerData.white = { enemyPiecesCaptured:0, name:"white"};
+
 //establish a closure to store the gameboard
 //and binds its return to gbfunc
 var gbfunc = function () {
@@ -281,6 +294,94 @@ var gbfunc = function () {
 
         }
 
+        //removeDeadStones takes in the coordinates of a piece that was just played
+        //it errors if there is no piece at those coordinates
+        //it determines the color of that stone, and then, working outwards from
+        //that stone, removes stones that are dead
+        //it returns the number of stones that were taken
+        function removeDeadStones(x, y) {
+
+           //start counting the number of stones
+           var stonesRemoved = 0;
+
+           //this will eventually be a list of objects
+           //with x and y properties, representing
+           var potentialDeadStones = new Array();
+
+           //sanity check
+           if (! (board[x-1][y-1] == "black" || board[x-1][y-1] == "white"))
+                throw "Man something is jacked up in removeDeadStones";
+
+           var oppositeColor = (board[x-1][y-1] == "black") ? "white" : "black";
+
+           console.log("In removeDeadStones the opposite color is: " + oppositeColor);
+
+           function recurseRemove(thisI,thisJ, prevI,prevJ) {
+              /* The way that I'd like to write this would be:
+               *
+               * def recurseRemove(thisSpace,prevSpace):
+               *   for surr in surroundingsOf(thisSpace) where surr != prevSpace:
+               *      if surr == null: return True
+               *      if surr == oppositeColor: return recurseRemove(surr, thisSpace)
+               *    return false
+               *
+               *    but this ain't python and javascript makes certain things kinda hard :\
+               */
+
+              //normally, we always add the stone to the list of potential removals
+              //when we call this; however if both prevI and prevJ are null (that is, this is 
+              //the first recursive call), we know that we're calling it on the stone that was
+              //just played, so in that case only we do not add it
+              //
+              //
+              debugger;
+
+              if (prevI != null) {
+                 potentialDeadStones.push({x:thisI, y:thisJ});
+              }
+
+
+              function subCheck(a,b) {
+              if ((a >= 0 && a <= board.length) && (b >= 0 && b <= board.length) && !(a == prevI && b == prevJ)) {
+                 if (board[a][b] == null)
+                    return true;
+                 if (board[a][b] == oppositeColor)
+                    return recurseRemove(a,b,thisI,thisJ);
+              }
+                 return false;
+              };
+
+              console.log("SUA");
+
+             if (subCheck(thisI-1,thisJ))
+                return true;
+             if (subCheck(thisI+1,thisJ))
+                return true;
+             if (subCheck(thisI,thisJ-1))
+                return true;
+             if (subCheck(thisI,thisJ+1))
+                return true;
+
+               //if nothing has returned true so far, the pieces are lost
+               return false;
+           }
+
+           //kill the stones iff recurseRemove returns false
+           //and return the number removed
+           if (recurseRemove(x-1,y-1, null, null) == false) {
+              for (var i = 0; i < potentialDeadStones.length; i++) {
+                 console.log("KLSDJFKL:JDFKLJKLSDJFKLSDJFKLFJ");
+                 var pds = potentialDeadStones[i];
+                 removeStone(pds.x,pds.y);
+                 stonesRemoved += 1;
+              }
+
+           return stonesRemoved;
+           }
+
+           return 0;
+        }
+
         return {makeMove: makeMoveFunction, 
                 removePieceFromState: function(x,y) {
                         console.log("Removed a piece of color " + board[x-1][y-1] + "at " + x+","+y);
@@ -292,6 +393,7 @@ var gbfunc = function () {
                         else { return board[x-1][y-1]; }
                         },
                 makeArbitraryMove: makeArbitraryMoveFunction,
+                removeDeadStones: removeDeadStones,
               };
 }();
 
@@ -300,6 +402,7 @@ var gbfunc = function () {
 var makeMove = gbfunc.makeMove;
 var removePieceFromState = gbfunc.removePieceFromState;
 var printBoard = gbfunc.printBoard;
+var removeDeadStones = gbfunc.removeDeadStones;
 
 
 
@@ -312,6 +415,7 @@ var currentPlayer = "black";//initialized to black on game start
 //it all begins here...
 //that is, execution begins here
 drawInitialBoard();
+
 
 //attach a function to canvas to listen for clicks, get the coords, and pass
 //it off to the piece adding/subtracting function
