@@ -196,12 +196,65 @@ function removePiece(x,y) {
       var canvasY = constants.boardPadding+(constants.height/18)*(y-1);
 
       //fill in circle with background
-      ctx.beginPath();
-      ctx.fillStyle=constants.color;
-      ctx.moveTo(canvasX-constants.stoneRadius,canvasY);
-      ctx.arc(canvasX,canvasY,constants.stoneRadius+1,0,Math.PI*2,true);//need the +1 to ensure the stone is wholly erased
-      ctx.fill();
-      ctx.closePath();
+
+      console.log("Canvas coords be: " + canvasX + " " + canvasY);
+
+      if (x == 1 || x == 19) {
+        ctx.beginPath();
+
+        //draw one side board color
+        ctx.fillStyle=constants.color;
+        if (x == 1)
+            ctx.arc(canvasX,canvasY,constants.stoneRadius+1,Math.PI*(1.5),Math.PI*(0.5),false);
+        else //x == 19
+            ctx.arc(canvasX,canvasY,constants.stoneRadius+1,Math.PI*(1.5),Math.PI*(0.5),true);
+        ctx.fill();
+        ctx.closePath()
+
+        //draw the other side white
+        ctx.beginPath();
+        ctx.fillStyle="white";
+        if (x == 19)
+            ctx.arc(canvasX,canvasY,constants.stoneRadius+1,Math.PI*(1.5),Math.PI*(0.5),false);
+        else //x == 1 
+            ctx.arc(canvasX,canvasY,constants.stoneRadius+1,Math.PI*(1.5),Math.PI*(0.5),true);
+        ctx.fill();
+        ctx.closePath();
+      }
+
+      else if (y == 1 || y ==19) {
+        ctx.beginPath();
+
+        //draw one side board color
+        ctx.fillStyle=constants.color;
+        if (y == 1)
+            ctx.arc(canvasX,canvasY,constants.stoneRadius+1,0,Math.PI,false);
+        else //y == 19
+            ctx.arc(canvasX,canvasY,constants.stoneRadius+1,0,Math.PI,true);
+        ctx.fill();
+        ctx.closePath()
+
+        //draw other side white
+        ctx.beginPath();
+        ctx.fillStyle="white";
+        if (y == 19)
+            ctx.arc(canvasX,canvasY,constants.stoneRadius+1,0,Math.PI,false);
+        else //y == 19
+            ctx.arc(canvasX,canvasY,constants.stoneRadius+1,0,Math.PI,true);
+        ctx.fill();
+        ctx.closePath();
+
+      }
+
+      else {
+        ctx.beginPath()
+        ctx.moveTo(canvasX-constants.stoneRadius,canvasY);
+        ctx.fillStyle=constants.color;
+        ctx.arc(canvasX,canvasY,constants.stoneRadius+1,0,Math.PI*2,true);//need the +1 to ensure the stone is wholly erased
+        ctx.fill();
+        ctx.closePath();
+      }
+
       //and redraw grid lines
 
       ctx.strokeStyle="black";
@@ -325,7 +378,6 @@ var gbfunc = function () {
             if (goY < board.length)
                 stonesToVisit.push({i:goX-1,j:goY});
 
-            debugger;
             function getDeadStoneList() {
 
                 var visitedList = new Array();
@@ -379,7 +431,6 @@ var gbfunc = function () {
                     }
                 }
 
-                debugger;
                 return visitedList;
             }
 
