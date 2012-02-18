@@ -142,17 +142,17 @@ function attemptMove(x,y,player) {
       //to outcomes, see the definition of makeMove within
       //the closure storing the gameboard state
 
-      var code = makeMove(x,y,player);
+      var makeMoveReturnCode = makeMove(x,y,player);
 
-      if (code == 0) {
+      if (makeMoveReturnCode == 0) {
         placePiece(x,y,player);
         switchPlayer();
       }
-      else if (code == 1) { //ko rule
+      else if (makeMoveReturnCode == 1) { //ko rule
         console.log("Ko rule, can't play here");
 
       }
-      else {
+      else if (makeMoveReturnCode == 2){
         console.log("Can't place stone here because this spot has already had a stone played on it");
       }
 }
@@ -258,17 +258,25 @@ var gbfunc = function () {
         //this function goes through the logic of a move and determines whether
         //or not it is a legal move, updating the game state iff it is
         function makeMoveFunction(x,y,player) {
+
+            //return 0 if it's a legal move and everything is fine
             if(board[x-1][y-1] == null) {
                 board[x-1][y-1] = player;
                 return 0;
             }
+
+            //return 1 if this move would violate the ko rule
             else if (false) {
-            //this is where the ko rule would be implemented
 
                 return 1;
             }
-            else {
+            //return 2 if there's a piece already at the spot you're trying to play at
+            else if (board[x-1][y-1] == "black" || board[x-1][y-1] == "white"){
                 return 2;
+             }
+
+            else {
+                throw "Man, something within the makeMove function is jacked up yo";
             }
 
         }
@@ -299,7 +307,6 @@ var printBoard = gbfunc.printBoard;
 $('#currentPlayer').text("Next to Play: Black");
 var currentPlayer = "black";//initialized to black on game start 
                             //because that's how you play Go 
-
 
 
 //it all begins here...
