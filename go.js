@@ -142,6 +142,7 @@ function attemptMove(x,y,player) {
       //to outcomes, see the definition of makeMove within
       //the closure storing the gameboard state
 
+
       var makeMoveReturnCode = makeMove(x,y,player);
 
       if (makeMoveReturnCode == 0) {
@@ -150,6 +151,7 @@ function attemptMove(x,y,player) {
 
         //remove dead stones (if necessary - removeDeadStones figures that out)
         //and add the total captured to total
+        
         playerData[player].enemyPiecesCaptured += removeDeadStones(x,y);
         console.log("Player " + playerData[player].name + " has now captured " + playerData[player].enemyPiecesCaptured + " stones in total");
 
@@ -258,6 +260,7 @@ var gbfunc = function () {
             board[i] = new Array(19);
         }
 
+
         //much like makeMoveFunction, except this doesn't bother to check if 
         //the move is according to the rules of Go and just changes the
         //state of the board, for debugging/handicaps/etc.
@@ -299,81 +302,95 @@ var gbfunc = function () {
         //it determines the color of that stone, and then, working outwards from
         //that stone, removes stones that are dead
         //it returns the number of stones that were taken
-        function removeDeadStones(x, y) {
+        function removeDeadStones(goX, goY) {
 
-           var stonesRemoved = 0;
+            var visitedBoard = new Array(19);
+            for (i=0; i < 19; i++) {
+                visitedBoard[i] = new Array(19);
+            }
 
+            var color = (board[goX-1][goY-1] == "white") ? "black" : "white";
 
-           //sanity check
-           if (!(0 <= x-1 && x-1 <= board.length && 0 <= y-1 && y-1 <= board.length))
-               throw "Something is jacked up in removeDeadStones";
+            //this is in array, not go notation
+            var stonesToVisit = new Array();
+            //eventually push all four while checking for sanity
+            //and also convert to array
+            
+            if (0 <= goX-2)
+                stonesToVisit.push({i:goX-2,j:goY-1});
+            if (goX < board.length)
+                stonesToVisit.push({i:goX,j:goY-1});
+            if (0 <= goY-2)
+                stonesToVisit.push({i:goX-1,j:goY-2});
+            if (goY < board.length)
+                stonesToVisit.push({i:goX-1,j:goY});
 
-           //x-1, y-1 guaranteed to be okay b/c x,y are go coordinates
-           var oppColor = (board[x-1][y-1] == "white") ? "black" : "white";
+            debugger;
+            function getDeadStoneList() {
 
-           //surrounding gets the 4 surrounding spots and converts them from 
-           //go coords to array coords
-           var surrounding = new Array(4);
-           surrounding[0] = {i: x-2, j: y-1};
-           surrounding[1] = {i: x, j: y-1};
-           surrounding[2] = {i: x-1, j: y-2};
-           surrounding[3] = {i: x-1, j: y};
+                var visitedList = new Array();
 
+                while (stonesToVisit.length > 0) {
 
-           for (var i = 0; i < surrounding.length; i++) {
-               var potentialDeadStones = new Array();
-               var cur = surrounding[i];
-               if ((board[cur.i] !== undefined) && (board[cur.i][cur.j] == oppColor)) {
-                  //10000 are dummy values for the prevI and prevJ of recurseCheck
-                  if (recurseCheck(cur.i,cur.j,oppColor,10000,10000) == false) {
-                      for (var c = 0; c < potentialDeadStones.length; c++) {
-                           //we add pieces to potentialDeadStones in array coords
-                           //so here we need to convert to go coords for removePiece
-                           removePiece(potentialDeadStones[c].x+1,potentialDeadStones[c].y+1);
-                           stonesRemoved += 1;
-                      }
-                  }
-               }
-           }
+                    var stone = stonesToVisit.pop();
+                    var i = stone.i;
+                    var j = stone.j;
 
-           //returns true if there are liberties remaining for the stone here
-           function recurseCheck(i,j,color,prevI,prevJ) {
+                    if (board[i][j] != color)  // we might have put a null space onto the board
+                        continue;              //or something of the opposite color
 
+                    visitedList.push(stone);
+                    visitedBoard[i][j] = "visited";
 
-              //remember this stone is only *potentially* dead
-              potentialDeadStones.push({x:i,y:j});
-                      
-              if (i-1 >= 0 && !(i-1 == prevI && j == prevJ)){
-                 if (board[i-1][j] == null)
-                  return true;
-                 if (board[i-1][j] == color) {
-                     if (recurseCheck(i-1,j,color,i,j)) { return true; }
-                }}
+                    if (0 <= i-1) { 
+                       if( board[i-1][j] == null)
+                         return new Array();
+                       else {
+                         if (board[i-1][j] == color && visitedBoard[i-1][j] == null)
+                            stonesToVisit.push({i:i-1,j:j});
+                        }
+                    }
 
-              if (i+1 <= board.length && !(i+1 == prevI && j == prevJ)){
-                 if (board[i+1][j] == null)
-                  return true;
-                 if (board[i+1][j] == color) {
-                     if (recurseCheck(i+1,j,color,i,j)) { return true; }
-                }}
-              if (j-1 >= 0 && !(i == prevI && j-1 == prevJ)){
-                 if (board[i][j-1] == null)
-                  return true;
-                 if (board[i][j-1] == color) {
-                     if (recurseCheck(i,j-1,color,i,j)) { return true; }
-                }}
-              if (j+1 <= board.length && !(prevI == j && j+1 == prevJ)){
-                 if (board[i][j+1] == null)
-                  return true;
-                 if (board[i][j+1] == color) {
-                     if (recurseCheck(i,j+1,color,i,j)) { return true; }
-                }}
+                    if (stone.i+1 < board.length) { 
+                       if( board[i+1][j] == null)
+                         return new Array();
+                       else {
+                         if (board[i+1][j] == color && visitedBoard[i+1][j] == null)
+                            stonesToVisit.push({i:i+1,j:j});
+                        }
+                    }
 
-              return false;
-        }
+                    if (0 <= stone.j-1) { 
+                       if( board[i][j-1] == null)
+                         return new Array();
+                       else {
+                         if (board[i][j-1] == color && visitedBoard[i][j-1] == null)
+                            stonesToVisit.push({i:i,j:j-1});
+                        }
+                    }
+                    
+                    if (j+1 < board.length) { 
+                       if( board[i][j+1] == null)
+                         return new Array();
+                       else {
+                         if (board[i][j+1] == color && visitedBoard[i][j+1] == null)
+                            stonesToVisit.push({i:i,j:j+1});
+                        }
+                    }
+                }
 
+                debugger;
+                return visitedList;
+            }
 
-           return stonesRemoved;
+            var visitedStones = getDeadStoneList();
+
+            for (var i = 0; i < visitedStones.length; i++) {
+                 removePiece(visitedStones[i].i+1,visitedStones[i].j+1);
+            }
+
+            return visitedStones.length;
+
         }
 
         return {makeMove: makeMoveFunction, 
