@@ -301,85 +301,79 @@ var gbfunc = function () {
         //it returns the number of stones that were taken
         function removeDeadStones(x, y) {
 
-           //start counting the number of stones
            var stonesRemoved = 0;
 
-           //this will eventually be a list of objects
-           //with x and y properties, representing
-           var potentialDeadStones = new Array();
 
            //sanity check
-           if (! (board[x-1][y-1] == "black" || board[x-1][y-1] == "white"))
-                throw "Man something is jacked up in removeDeadStones";
+           if (!(0 <= x-1 && x-1 <= board.length && 0 <= y-1 && y-1 <= board.length))
+               throw "Something is jacked up in removeDeadStones";
 
-           var oppositeColor = (board[x-1][y-1] == "black") ? "white" : "black";
+           //x-1, y-1 guaranteed to be okay b/c x,y are go coordinates
+           var oppColor = (board[x-1][y-1] == "white") ? "black" : "white";
 
-           console.log("In removeDeadStones the opposite color is: " + oppositeColor);
-
-           function recurseRemove(thisI,thisJ, prevI,prevJ) {
-              /* The way that I'd like to write this would be:
-               *
-               * def recurseRemove(thisSpace,prevSpace):
-               *   for surr in surroundingsOf(thisSpace) where surr != prevSpace:
-               *      if surr == null: return True
-               *      if surr == oppositeColor: return recurseRemove(surr, thisSpace)
-               *    return false
-               *
-               *    but this ain't python and javascript makes certain things kinda hard :\
-               */
-
-              //normally, we always add the stone to the list of potential removals
-              //when we call this; however if both prevI and prevJ are null (that is, this is 
-              //the first recursive call), we know that we're calling it on the stone that was
-              //just played, so in that case only we do not add it
-              //
-              //
-              debugger;
-
-              if (prevI != null) {
-                 potentialDeadStones.push({x:thisI, y:thisJ});
-              }
+           //surrounding gets the 4 surrounding spots and converts them from 
+           //go coords to array coords
+           var surrounding = new Array(4);
+           surrounding[0] = {i: x-2, j: y-1};
+           surrounding[1] = {i: x, j: y-1};
+           surrounding[2] = {i: x-1, j: y-2};
+           surrounding[3] = {i: x-1, j: y};
 
 
-              function subCheck(a,b) {
-              if ((a >= 0 && a <= board.length) && (b >= 0 && b <= board.length) && !(a == prevI && b == prevJ)) {
-                 if (board[a][b] == null)
-                    return true;
-                 if (board[a][b] == oppositeColor)
-                    return recurseRemove(a,b,thisI,thisJ);
-              }
-                 return false;
-              };
-
-              console.log("SUA");
-
-             if (subCheck(thisI-1,thisJ))
-                return true;
-             if (subCheck(thisI+1,thisJ))
-                return true;
-             if (subCheck(thisI,thisJ-1))
-                return true;
-             if (subCheck(thisI,thisJ+1))
-                return true;
-
-               //if nothing has returned true so far, the pieces are lost
-               return false;
+           for (var i = 0; i < surrounding.length; i++) {
+               var potentialDeadStones = new Array();
+               var cur = surrounding[i];
+               if ((board[cur.i] !== undefined) && (board[cur.i][cur.j] == oppColor)) {
+                  //10000 are dummy values for the prevI and prevJ of recurseCheck
+                  if (recurseCheck(cur.i,cur.j,oppColor,10000,10000) == false) {
+                      for (var c = 0; c < potentialDeadStones.length; c++) {
+                           //we add pieces to potentialDeadStones in array coords
+                           //so here we need to convert to go coords for removePiece
+                           removePiece(potentialDeadStones[c].x+1,potentialDeadStones[c].y+1);
+                           stonesRemoved += 1;
+                      }
+                  }
+               }
            }
 
-           //kill the stones iff recurseRemove returns false
-           //and return the number removed
-           if (recurseRemove(x-1,y-1, null, null) == false) {
-              for (var i = 0; i < potentialDeadStones.length; i++) {
-                 console.log("KLSDJFKL:JDFKLJKLSDJFKLSDJFKLFJ");
-                 var pds = potentialDeadStones[i];
-                 removeStone(pds.x,pds.y);
-                 stonesRemoved += 1;
-              }
+           //returns true if there are liberties remaining for the stone here
+           function recurseCheck(i,j,color,prevI,prevJ) {
+
+
+              //remember this stone is only *potentially* dead
+              potentialDeadStones.push({x:i,y:j});
+                      
+              if (i-1 >= 0 && !(i-1 == prevI && j == prevJ)){
+                 if (board[i-1][j] == null)
+                  return true;
+                 if (board[i-1][j] == color) {
+                     if (recurseCheck(i-1,j,color,i,j)) { return true; }
+                }}
+
+              if (i+1 <= board.length && !(i+1 == prevI && j == prevJ)){
+                 if (board[i+1][j] == null)
+                  return true;
+                 if (board[i+1][j] == color) {
+                     if (recurseCheck(i+1,j,color,i,j)) { return true; }
+                }}
+              if (j-1 >= 0 && !(i == prevI && j-1 == prevJ)){
+                 if (board[i][j-1] == null)
+                  return true;
+                 if (board[i][j-1] == color) {
+                     if (recurseCheck(i,j-1,color,i,j)) { return true; }
+                }}
+              if (j+1 <= board.length && !(prevI == j && j+1 == prevJ)){
+                 if (board[i][j+1] == null)
+                  return true;
+                 if (board[i][j+1] == color) {
+                     if (recurseCheck(i,j+1,color,i,j)) { return true; }
+                }}
+
+              return false;
+        }
+
 
            return stonesRemoved;
-           }
-
-           return 0;
         }
 
         return {makeMove: makeMoveFunction, 
