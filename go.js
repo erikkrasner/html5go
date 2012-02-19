@@ -72,14 +72,13 @@ function drawInitialBoard() {
 
    drawGridLines();
 
-
 }
 
 //takes in go coordinates, places a piece of the specificed 
 //color at there
-//note that placePiece doesn't care about the current state of the game
+//note that placeStoneOnGameboard doesn't care about the current state of the game
 //or who the player is, it just puts down a piece of whatever color
-function placePiece(x,y,color) {
+function placeStoneOnGameboard(x,y,color) {
 
    //convert back from go coordinates to canvas pixels
    var canvasX = constants.boardPadding+(constants.width/18)*(x-1); 
@@ -88,7 +87,7 @@ function placePiece(x,y,color) {
 
    if (color == "black") ctx.fillStyle = "black";
    else if (color == "white") ctx.fillStyle = "white";
-   else console.log("Invalid Color in placePiece");
+   else console.log("Invalid Color in placeStoneOnGameboard");
 
    ctx.beginPath();
    ctx.moveTo(canvasX-constants.stoneRadius,canvasY);
@@ -147,7 +146,7 @@ function attemptMove(x,y,player) {
 
       if (makeMoveReturnCode == 0) {
         //place the piece on the gameboard canvas
-        placePiece(x,y,player);
+        placeStoneOnGameboard(x,y,player);
 
         //remove dead stones (if necessary - removeDeadStones figures that out)
         //and add the total captured to total
@@ -320,8 +319,7 @@ var gbfunc = function () {
         function makeArbitraryMoveFunction(x,y,player) {
                 console.log("Making arbitrary move");
                 board[x-1][y-1] = player;
-                //recall, placePiece updates the canvas gameboard
-                placePiece(x,y,player);
+                placeStoneOnGameboard(x,y,player);
         }
 
         //this function goes through the logic of a move and determines whether
@@ -480,8 +478,6 @@ var removePieceFromState = gbfunc.removePieceFromState;
 var printBoard = gbfunc.printBoard;
 var removeDeadStones = gbfunc.removeDeadStones;
 
-
-
 //currentPlayer is the global arbitor of whose turn it is
 $('#currentPlayer').text("Next to Play: Black");
 var currentPlayer = "black";//initialized to black on game start 
@@ -491,7 +487,6 @@ var currentPlayer = "black";//initialized to black on game start
 //it all begins here...
 //that is, execution begins here
 drawInitialBoard();
-
 
 //attach a function to canvas to listen for clicks, get the coords, and pass
 //it off to the piece adding/subtracting function
