@@ -364,21 +364,36 @@ var gbfunc = function () {
 
             var color = (board[goX-1][goY-1] == "white") ? "black" : "white";
 
-            //this is in array, not go notation
-            var stonesToVisit = new Array();
             //eventually push all four while checking for sanity
             //and also convert to array
-            
-            if (0 <= goX-2)
-                stonesToVisit.push({i:goX-2,j:goY-1});
-            if (goX < board.length)
-                stonesToVisit.push({i:goX,j:goY-1});
-            if (0 <= goY-2)
-                stonesToVisit.push({i:goX-1,j:goY-2});
-            if (goY < board.length)
-                stonesToVisit.push({i:goX-1,j:goY});
 
-            function getDeadStoneList() {
+            var visitedStones = new Array();
+            
+            if (0 <= goX-2) {
+                var d = new Array();
+                d.push({i:goX-2,j:goY-1});
+                visitedStones = visitedStones.concat(getDeadStoneList(d)); 
+            }
+            if (goX < board.length) {
+                var d = new Array();
+                d.push({i:goX,j:goY-1});
+                visitedStones = visitedStones.concat(getDeadStoneList(d)); 
+            }
+            if (0 <= goY-2) {
+                var d = new Array();
+                d.push({i:goX-1,j:goY-2});
+                visitedStones = visitedStones.concat(getDeadStoneList(d)); 
+            }
+            if (goY < board.length) {
+                var d = new Array();
+                d.push({i:goX-1,j:goY});
+                visitedStones = visitedStones.concat(getDeadStoneList(d)); 
+            }
+
+
+            //stonesToVisit uses array not go notation
+            //so the above if statements convert
+            function getDeadStoneList(stonesToVisit) {
 
                 var visitedList = new Array();
 
@@ -434,7 +449,6 @@ var gbfunc = function () {
                 return visitedList;
             }
 
-            var visitedStones = getDeadStoneList();
 
             for (var i = 0; i < visitedStones.length; i++) {
                  removePiece(visitedStones[i].i+1,visitedStones[i].j+1);
