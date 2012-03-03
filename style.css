@@ -15,3 +15,17 @@ canvas {
 #gameBoard {
         float:left;
 }
+
+
+.noticeItem {
+        background-color: pink;
+}
+
+
+.evenNoticeItem {
+        background-color:green;
+}
+
+.oddNoticeItem {
+        font-style:italic;
+}

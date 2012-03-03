@@ -141,7 +141,6 @@ function attemptMove(x,y,player) {
       //to outcomes, see the definition of makeMove within
       //the closure storing the gameboard state
 
-
       var makeMoveReturnCode = makeMove(x,y,player);
 
       if (makeMoveReturnCode == 0) {
@@ -296,6 +295,34 @@ function removePiece(x,y) {
         console.log("There's no piece at location " + x + "," + y  + " to remove");
      }
 }
+
+
+
+//appends a log message to the game log on the side of the page
+//
+//
+function _writeMessage() {
+   var evenOddSwitch = false;
+
+   return function (contentString) {
+
+        var msgString = "<div class='noticeItem'>" + contentString + "</div>";
+
+        var domElem = $(msgString).prependTo("#noticeList");
+        if (evenOddSwitch) {
+            $(domElem).addClass("evenNoticeItem");
+            evenOddSwitch = false;
+        }
+        else {
+           $(domElem).addClass("oddNoticeItem");
+            evenOddSwitch = true;
+        }
+
+   };
+}
+
+//yae closures! :D
+var writeMessage = _writeMessage();
 
 
 
@@ -487,6 +514,15 @@ var currentPlayer = "black";//initialized to black on game start
 //it all begins here...
 //that is, execution begins here
 drawInitialBoard();
+
+//TODO
+//add code here to deal with adding a particular game state to the current gaem
+//environment - this'll probably entail refactoring gbfunc
+//
+//
+//
+//
+// /*do this here */
 
 //attach a function to canvas to listen for clicks, get the coords, and pass
 //it off to the piece adding/subtracting function
