@@ -17,15 +17,21 @@ canvas {
 }
 
 
+#noticeList {
+        float:right;
+        overflow:auto;
+        height:400px;
+}
+
 .noticeItem {
-        background-color: pink;
+        background-color:#eeeeee;
 }
 
 
 .evenNoticeItem {
-        background-color:green;
+        background-color:#796548;
 }
 
 .oddNoticeItem {
-        font-style:italic;
+        background-color:#fafab0;
 }
