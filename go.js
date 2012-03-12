@@ -134,25 +134,27 @@ function clickToGoCoordinates(mouseX, mouseY) {
     attemptMove(goX, goY, currentPlayer);
 }
 
-//attempts to make a move and alerts the player if it's
+//attempts to make a move, alerts the player if it's
 //illegal or something's wrong, etc.
+//and updates the game interface appropriately
 function attemptMove(x,y,player) {
       //for mapping of numeric codes returned by makeMove
       //to outcomes, see the definition of makeMove within
       //the closure storing the gameboard state
-
 
       var makeMoveReturnCode = makeMove(x,y,player);
 
       if (makeMoveReturnCode == 0) {
         //place the piece on the gameboard canvas
         placeStoneOnGameboard(x,y,player);
+        writeMessage("Player " + playerData[player].name  + " has played at: " + x + "," + y);
 
         //remove dead stones (if necessary - removeDeadStones figures that out)
         //and add the total captured to total
         
-        playerData[player].enemyPiecesCaptured += removeDeadStones(x,y);
-        console.log("Player " + playerData[player].name + " has now captured " + playerData[player].enemyPiecesCaptured + " stones in total");
+        var capturedStones = removeDeadStones(x,y);
+        writeMessage("Player " + playerData[player].name + " captured " + capturedStones + " stones in total");
+        playerData[player].enemyPiecesCaptured += capturedStones;
 
         switchPlayer();
       }
@@ -296,6 +298,32 @@ function removePiece(x,y) {
         console.log("There's no piece at location " + x + "," + y  + " to remove");
      }
 }
+
+
+//appends a log message to the game log on the side of the page
+//
+//
+function _writeMessage() {
+   var evenOddSwitch = false;
+
+   return function (contentString) {
+
+        var msgString = "<div class='noticeItem'>" + contentString + "</div>";
+
+        var domElem = $(msgString).prependTo("#noticeList");
+        if (evenOddSwitch) {
+            $(domElem).addClass("evenNoticeItem");
+            evenOddSwitch = false;
+        }
+        else {
+           $(domElem).addClass("oddNoticeItem");
+            evenOddSwitch = true;
+        }
+   };
+}
+
+//yae closures! :D
+var writeMessage = _writeMessage();
 
 
 
@@ -487,6 +515,15 @@ var currentPlayer = "black";//initialized to black on game start
 //it all begins here...
 //that is, execution begins here
 drawInitialBoard();
+
+//TODO
+//add code here to deal with adding a particular game state to the current gaem
+//environment - this'll probably entail refactoring gbfunc
+//
+//
+//
+//
+// /*do this here */
 
 //attach a function to canvas to listen for clicks, get the coords, and pass
 //it off to the piece adding/subtracting function

@@ -15,3 +15,23 @@ canvas {
 #gameBoard {
         float:left;
 }
+
+
+#noticeList {
+        float:right;
+        overflow:auto;
+        height:400px;
+}
+
+.noticeItem {
+        background-color:#eeeeee;
+}
+
+
+.evenNoticeItem {
+        background-color:#796548;
+}
+
+.oddNoticeItem {
+        background-color:#fafab0;
+}
