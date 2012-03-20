@@ -21,21 +21,18 @@ canvas {
         border:3px;
 }
 
-#noticeList {
+ul {
         float:right;
         overflow:auto;
         height:400px;
 }
-
-.noticeItem {
+li {
         background-color:#eeeeee;
 }
-
-
-.evenNoticeItem {
+li.even {
         background-color:#796548;
 }
 
-.oddNoticeItem {
+li.odd {
         background-color:#fafab0;
 }
