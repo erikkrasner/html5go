@@ -14,8 +14,13 @@ canvas {
 
 #gameBoard {
         float:left;
+        cursor:none;
 }
 
+#gameBoard:hover {
+        border:1px;
+        border-color:#000;
+}
 
 #noticeList {
         float:right;
