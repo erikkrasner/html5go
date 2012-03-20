@@ -2,10 +2,8 @@ canvas {
         border: 1px dotted black;
 }
 
-
-#info {
-        
-        float:right;
+div {
+        float:left;
 }
 
 #currentPlayer {
@@ -13,10 +11,8 @@ canvas {
 }
 
 #gameBoard {
-        float:left;
         cursor:none;
 }
-
 #gameBoard:hover {
         border:3px;
 }
@@ -27,6 +23,7 @@ ul {
         height:400px;
 }
 li {
+        list-style-type:none;
         background-color:#eeeeee;
 }
 li.even {
