@@ -183,6 +183,18 @@ function placeHandicapStones(numStones, player) {
         gbfunc.makeArbitraryMove(10,4,player);
     else if (numStones == 3)
         gbfunc.makeArbitraryMove(16,4,player);
+    else if (numStones == 4)
+        gbfunc.makeArbitraryMove(4,10,player);
+    else if (numStones == 5)
+        gbfunc.makeArbitraryMove(10,10,player);
+    else if (numStones == 6)
+        gbfunc.makeArbitraryMove(16,10,player);
+    else if (numStones == 7)
+        gbfunc.makeArbitraryMove(4,16,player);
+    else if (numStones == 8)
+        gbfunc.makeArbitraryMove(10,16,player);
+    else if (numStones == 9)
+        gbfunc.makeArbitraryMove(16,16,player);
 
     placeHandicapStones(numStones - 1,player);
 }
