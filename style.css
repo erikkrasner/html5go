@@ -18,8 +18,7 @@ canvas {
 }
 
 #gameBoard:hover {
-        border:1px;
-        border-color:#000;
+        border:3px;
 }
 
 #noticeList {
