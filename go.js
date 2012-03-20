@@ -1,4 +1,3 @@
-
 //these should never be changed during the course of the program
 var constants = {
         width: 700,
@@ -320,9 +319,9 @@ function _writeMessage() {
 
    return function (contentString) {
 
-        var msgString = "<div class='noticeItem'>" + contentString + "</div>";
+        var msgString = "<li>" + contentString + "</li>";
 
-        var domElem = $(msgString).prependTo("#noticeList");
+        var domElem = $(msgString).appendTo("#noticeList");
         if (evenOddSwitch) {
             $(domElem).addClass("evenNoticeItem");
             evenOddSwitch = false;
