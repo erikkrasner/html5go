@@ -323,11 +323,11 @@ function _writeMessage() {
 
         var domElem = $(msgString).appendTo("#noticeList");
         if (evenOddSwitch) {
-            $(domElem).addClass("evenNoticeItem");
+            $(domElem).addClass("even");
             evenOddSwitch = false;
         }
         else {
-           $(domElem).addClass("oddNoticeItem");
+           $(domElem).addClass("odd");
             evenOddSwitch = true;
         }
    };
